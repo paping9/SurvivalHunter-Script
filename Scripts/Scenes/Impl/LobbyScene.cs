@@ -9,9 +9,9 @@ using UIController;
 
 public class LobbyScene : BaseScene
 {
-    public override void OnSceneStart(IUIControllerContainer uiController, SceneData sceneData = null)
+    public override void OnSceneStart(SceneData sceneData = null)
     {
-        base.OnSceneStart(uiController);
+        base.OnSceneStart(sceneData);
         // UIController 에 Home UI 호출.
         _uiController.ChangeUIController(new UIControllerParam() { ControllerType = UIControllerType.Home }).Forget();
         AddMessageListeners();

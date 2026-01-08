@@ -1,13 +1,15 @@
-﻿using UnityEngine;
-using Scene;
-
+﻿using Scene;
 using UIController;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 public class BaseScene : MonoBehaviour
 {
     [SerializeField] private ContentSceneType _type;
 
     protected IUIControllerContainer _uiController;
+    protected ISceneManager _sceneManager;
 
     public ContentSceneType Type
     {
@@ -24,6 +26,14 @@ public class BaseScene : MonoBehaviour
         get => ThemaName;
     }
 
+    [Inject]
+    public void Construct(IUIControllerContainer uiController, ISceneManager sceneManager)
+    {
+        _uiController = uiController;
+        _sceneManager = sceneManager;
+    }
+
+
     public virtual void Start()
     {
         RegistCurrentScene();
@@ -31,12 +41,11 @@ public class BaseScene : MonoBehaviour
 
     private void RegistCurrentScene()
     {
-        SceneManager.Instance.SetCurrentContentsScene(this);
+        _sceneManager?.SetCurrentContentsScene(this);
     }
 
-    public virtual void OnSceneStart(IUIControllerContainer uiController, SceneData sceneData = null)
+    public virtual void OnSceneStart(SceneData sceneData = null)
     {
-        _uiController = uiController;
     }
 
     public virtual void BackKey()
@@ -53,5 +62,4 @@ public class BaseScene : MonoBehaviour
     {
 
     }
-
 }

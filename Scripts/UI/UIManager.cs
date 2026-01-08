@@ -1,16 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using AssetBundle;
+using Cysharp.Threading.Tasks;
+using Scene;
+using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Threading;
+using UIController;
 using UnityEngine;
 using UnityEngine.UI;
-
-using Cysharp.Threading.Tasks;
-using System.Threading;
-
-using AssetBundle;
 using Utils;
 using Utils.Extension;
+using VContainer;
+using VContainer.Unity;
 
 namespace UI
 {
@@ -35,6 +36,14 @@ namespace UI
 
         private Camera _mainCamera = null;
 
+        private IAddressableManager _addressableManager;
+
+        [Inject]
+        public void Construct(IAddressableManager addressableManager)
+        {
+            _addressableManager = addressableManager;
+        }
+
         private void Start()
         {
             var fRateWidth        = (float)Screen.width / CommonConstValue.DefaultWidth;
@@ -56,7 +65,6 @@ namespace UI
 
             _canvasSize       = new Vector2(fUIWidth, fUIHeight);
             _canvasHalfSize   = _canvasSize * 0.5f;
-
         }
 
         public override void OnDestroy()
@@ -77,7 +85,7 @@ namespace UI
                 return;
 
             _dicUICache[uiId].Remove();
-            SystemLocator.Get<AddressableManager>().ReleaseInstantiate(_dicUICache[uiId].gameObject);
+            _addressableManager?.ReleaseInstantiate(_dicUICache[uiId].gameObject);
             _dicUICache.Remove(uiId);
             _dicUIOpenCache.Remove(uiId);
         }
@@ -162,8 +170,7 @@ namespace UI
 
             if (_dicUICache.ContainsKey(uiData.UiId) == false) // cache 에 없는 UI만 로드
             {
-
-                var instance = await SystemLocator.Get<AddressableManager>().LoadInstantiate(uiData.UiId.Name, null);
+                var instance = await _addressableManager.LoadInstantiate(uiData.UiId.Name, null);
                 uiInstance = instance.GetComponent<UIBase>();
 
 #if UNITY_EDITOR
@@ -252,7 +259,7 @@ namespace UI
 
         public Vector2 ConvertScreenToWorldPoint(Vector2 vScreen)
         {
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 _uiCanvasTrans, vScreen, _uiCanvas.worldCamera, out var result);
 
             return result;
