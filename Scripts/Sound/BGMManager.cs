@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿using AssetBundle;
 using Cysharp.Threading.Tasks;
-
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using AssetBundle;
 using Utils;
+using Utils.Pool;
+using VContainer;
 
 namespace Sound
 {
@@ -83,12 +83,11 @@ namespace Sound
 
         public bool IgnoreChangeBgm { get; set; } = false;
 
-        public void Init()
+        private IAddressableManager _addressableManager;
+        [Inject]
+        public void Construct(IAddressableManager addressableManager)
         {
-            //var option = Grm.LocalData.GetOption();
-            ////Debug.Log(option.BGMOn + " : " + option.TotalSoundOn);
-            //Mute = !option.TotalSoundOn || !option.BGMOn;
-            //Volume = option.TotalSoundVolume * option.BGMVolume;
+            _addressableManager = addressableManager;
         }
 
         private void Awake()
@@ -120,7 +119,7 @@ namespace Sound
                 return;
             }
 
-            SystemLocator.Get<AddressableManager>().Load<AudioClip>(key, (clip) =>
+            _addressableManager.Load<AudioClip>(key, (clip) =>
             {
                 CurrentKey = key;
                 PlayBGMInternel(clip, fadeType, fadeTime, syncPrevClip, bResetSameClip);

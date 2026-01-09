@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 
 using Bootstrap;
-using Message;
 using Scene;
 using UIController;
 using UnityEngine;
-using VContainer;
 using VContainer.Unity;
 
 public class TitleScene : BaseScene
@@ -19,7 +14,8 @@ public class TitleScene : BaseScene
     public override void OnSceneStart(SceneData sceneData = null)
     {
         base.OnSceneStart(sceneData);
-        
+
+        AddMessageListeners();
         // Bootstrap 시작
         StartBootstrap().Forget();
     }
@@ -79,8 +75,6 @@ public class TitleScene : BaseScene
             Debug.LogError("[TitleScene] Bootstrap failed");
             // 오류 UI 표시
         }
-
-        AddMessageListeners();
     }
 
     private void OnBootstrapProgressChanged(float progress)

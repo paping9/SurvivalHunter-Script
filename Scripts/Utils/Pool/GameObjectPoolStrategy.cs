@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Utils.Extension;
+using VContainer;
 
 namespace Utils.Pool
 {
@@ -9,9 +10,11 @@ namespace Utils.Pool
         private readonly T _prefab;
         private readonly string _poolingKey;
         private readonly Transform _rootContainer;
-        
-        public GameObjectPoolStrategy(string poolingKey, T prefab, Transform parent)
+        private readonly IObjectResolver _resolver;
+
+        public GameObjectPoolStrategy(IObjectResolver resolver, string poolingKey, T prefab, Transform parent)
         {
+            _resolver = resolver;
             _prefab = prefab;
             _poolingKey = poolingKey;
             _rootContainer = parent;
@@ -27,6 +30,7 @@ namespace Utils.Pool
 
             var pooling = go.GetOrAddComponent<PoolingComponent<T>>();
 
+            _resolver.Inject(pooling);
             pooling.Setup(_poolingKey);
 
             return component;

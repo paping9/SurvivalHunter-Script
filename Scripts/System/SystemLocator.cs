@@ -22,8 +22,8 @@ namespace System
             Register<ISceneManager>(new SceneManager());
             Register<IAddressableManager>(new AddressableManager());
             Register<IMessageBus>(new MessageBus());
-            Register<IGenericPoolManager>(new GenericPoolManager());
-            Register<IMapRoomCreator>(new MapRoomCreator(Get<IGenericPoolManager>()));
+            //Register<IGenericPoolManager>(new GenericPoolManager());
+            //Register<IMapRoomCreator>(new MapRoomCreator(Get<IGenericPoolManager>()));
             
             _isInitialized = true;
         }

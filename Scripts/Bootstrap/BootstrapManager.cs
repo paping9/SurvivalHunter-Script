@@ -37,7 +37,9 @@ namespace Bootstrap
         /// </summary>
         public void RegisterStep(IBootstrapStep step)
         {
-            if (step != null && !_bootstrapSteps.Contains(step))
+            if (step == null) return;
+            
+            if (!_bootstrapSteps.Contains(step))
             {
                 _bootstrapSteps.Add(step);
             }
