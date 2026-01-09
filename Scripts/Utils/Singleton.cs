@@ -45,11 +45,7 @@ namespace Utils
             {
                 if (_instance == null)
                 {
-                    var objects = FindObjectsOfType<T>();
-                    if (objects.Length > 0) /// 1개 이상인 경우 이미 존재. _instance에 저장후 리턴.
-                    {
-                        _instance = objects[0];
-                    }
+                    _instance = FindAnyObjectByType<T>();
                 }
 
                 return _instance;

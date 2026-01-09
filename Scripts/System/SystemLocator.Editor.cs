@@ -18,14 +18,14 @@ namespace System
             {
                 return new MessageBus();
             });
-            Register<IGenericPoolManager>(()=>
-            {
-                return new GenericPoolManager();
-            });
-            Register<IMapRoomCreator>(()=>
-            {
-                return new MapRoomCreator(Get<IGenericPoolManager>());
-            });
+            //Register<IGenericPoolManager>(()=>
+            //{
+            //    return new GenericPoolManager();
+            //});
+            //Register<IMapRoomCreator>(()=>
+            //{
+            //    return new MapRoomCreator(Get<IGenericPoolManager>());
+            //});
             
             var db = UnityEditor.AssetDatabase.LoadAssetAtPath<MapRoomDatabase>("Assets/AssetBundle/Maps/MapRoomDatabase.asset");
             Get<IMapRoomCreator>().Initialize(db);

@@ -1,21 +1,27 @@
-using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Defs;
+using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using Utils.Pool;
+using VContainer;
 
 namespace Game.Map
 {
     public class MapRoomCreator : IMapRoomCreator
     {
-        private readonly IGenericPoolManager _genericPoolManager;
+        private IGenericPoolManager _genericPoolManager;
         private MapRoomDatabase _roomDatabase;
-        
-        public MapRoomCreator(IGenericPoolManager genericPoolManager)
+
+        // 컨테이너 자체를 주입받습니다. (팩토리 패턴 대신 간단하게 사용 시)
+        private IObjectResolver _container;
+
+        [Inject]
+        public void Construct(IGenericPoolManager genericPoolManager, IObjectResolver container)
         {
             _genericPoolManager = genericPoolManager;
+            _container = container;
         }
 
         public void Initialize(MapRoomDatabase roomDatabase)
@@ -45,6 +51,8 @@ namespace Game.Map
             GameObject root = new GameObject($"Room_{roomInfo.name}");
             var room = root.GetOrAddComponent<MapRoom>();
             if(parent != null) root.transform.SetParent(parent);
+
+            _container.Inject(room);
 
             Vector2Int size = roomInfo.MapSize;
             int[,] tempMap = new int[size.y, size.x];

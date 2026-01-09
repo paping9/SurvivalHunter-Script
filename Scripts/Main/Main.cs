@@ -6,31 +6,36 @@ using UnityEngine;
 using UIController;
 using Scene;
 using Utils;
+using VContainer;
+using VContainer.Unity;
+using UI;
 
 public class Main : SingletonMB<Main>
 {
     private IUIControllerContainer _uiController;
+    private ISceneManager _sceneManager;
+
+    [Inject]
+    public void Construct(IUIControllerContainer uiController, ISceneManager sceneManager)
+    {
+        _uiController = uiController;
+        _sceneManager = sceneManager;
+    }
 
     private void Start()
     {
-        CreateController();
         InitializeManager();
         StartTitle();
     }
 
-    private void CreateController()
-    {
-        _uiController = new UIControllerContainer();
-    }
-
     private void InitializeManager()
     {
-        SceneManager.Instance.Init(_uiController);
+        _sceneManager.Init();
     }
 
     private void StartTitle()
     {
-        SceneManager.Instance.ChangeScene(ContentSceneType.Title, (result) => { });
+       _sceneManager.ChangeScene(ContentSceneType.Title, (result) => { });
     }
 
     public override void OnDestroy()

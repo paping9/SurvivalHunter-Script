@@ -1,13 +1,12 @@
-﻿using System;
+﻿using AssetBundle;
+using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
-
+using UIController;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-using Cysharp.Threading.Tasks;
-
-using UIController;
 using Utils;
+using VContainer;
 
 namespace Scene
 {
@@ -36,13 +35,30 @@ namespace Scene
         }
     }
 
-    public class SceneManager : Singleton<SceneManager>
+    public interface ISceneManager
+    {
+        ContentSceneType CurrentSceneType { get; }
+        float LoadingSceneProgress { get; }
+        BaseScene CurrentContentScene { get; }
+        void Init();
+        void ClearLoadingState();
+        void SetCurrentContentsScene(BaseScene currentContentsScene);
+        void LoadEnviromentScene(string sceneName, Action<bool> result);
+        void ChangeScene(ContentSceneType changeContentsScene, Action<bool> changeDone, SceneData sceneData = null);
+        bool ReturnScene(System.Action<bool> changeDone = null);
+        ContentSceneType GetPrevSceneBySceneStack();
+        ContentSceneType GetPrevScene();
+        bool IsCurrentSceneExist();
+        bool IsOpenScene(ContentSceneType sceneType);
+
+    }
+
+    public class SceneManager : ISceneManager
     {
         private Stack<SceneStackData>   _sceneStack         = new Stack<SceneStackData>();
         private SceneStackData          _curScene           = null;
         private ContentSceneType        _prevSceneType      = ContentSceneType.MAX;
         private SceneData               _sceneData          = null;
-        private IUIControllerContainer  _uiController       = null;
 
         private BaseScene _currentContentScene = null;
         public BaseScene CurrentContentScene
@@ -72,9 +88,9 @@ namespace Scene
             }
         }
 
-        public void Init(IUIControllerContainer uiController)
+        public void Init()
         {
-            _uiController = uiController;
+
         }
 
         public void ClearLoadingState()
@@ -90,7 +106,7 @@ namespace Scene
 
             _curScene = new SceneStackData(currentContentsScene.Type, currentContentsScene.SceneName);
             _currentContentScene = currentContentsScene;
-            currentContentsScene.OnSceneStart(_uiController, _sceneData);
+            currentContentsScene.OnSceneStart(_sceneData);
         }
 
         public void LoadEnviromentScene(string sceneName, Action<bool> result)

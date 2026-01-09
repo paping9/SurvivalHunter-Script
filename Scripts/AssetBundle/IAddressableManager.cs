@@ -7,6 +7,7 @@ namespace AssetBundle
     public interface IAddressableManager
     {
         AsyncOperationHandle<T> Load<T>(string assetName) where T : UnityEngine.Object;
+        void Load<T>(string assetName, Action<T> result) where T : UnityEngine.Object;
         T LoadWaitForCompletion<T>(string assetName) where T : UnityEngine.Object;
         AsyncOperationHandle<GameObject> LoadInstantiate(string assetName, Transform transform);
         void LoadInstantiate<T>(string assetName, Transform transform, Action<T> result) where T : UnityEngine.Object;

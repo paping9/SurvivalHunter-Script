@@ -1,8 +1,10 @@
-using System.Collections.Generic;
 using AssetBundle;
 using Game.Map;
 using Message;
+using System.Collections.Generic;
+using UIController;
 using Utils.Pool;
+using Scene;
 
 namespace System
 {
@@ -15,11 +17,13 @@ namespace System
         public static void Init()
         {
             if (_isInitialized) return;
-            
+
+            Register<IUIControllerContainer>(new UIControllerContainer());
+            Register<ISceneManager>(new SceneManager());
             Register<IAddressableManager>(new AddressableManager());
             Register<IMessageBus>(new MessageBus());
-            Register<IGenericPoolManager>(new GenericPoolManager());
-            Register<IMapRoomCreator>(new MapRoomCreator(Get<IGenericPoolManager>()));
+            //Register<IGenericPoolManager>(new GenericPoolManager());
+            //Register<IMapRoomCreator>(new MapRoomCreator(Get<IGenericPoolManager>()));
             
             _isInitialized = true;
         }
