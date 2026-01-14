@@ -12,7 +12,7 @@ public class PacketHandler
         S_BroadcastEnterGame enter = packet as S_BroadcastEnterGame;
         ServerSession serverSession = session as ServerSession;
 
-        PlayerManager.Instance.EnterGame(enter);
+        //PlayerManager.Instance.EnterGame(enter);
     }
 
     public static void S_BroadcastLeavGameHandler(PacketSession session, IPacket packet)
@@ -20,7 +20,7 @@ public class PacketHandler
         S_BroadcastLeavGame pkt = packet as S_BroadcastLeavGame;
         ServerSession serverSession = session as ServerSession;
 
-        PlayerManager.Instance.LeaveGame(pkt);
+        //PlayerManager.Instance.LeaveGame(pkt);
     }
 
     public static void S_PlayerListHandler(PacketSession session, IPacket packet)
@@ -28,7 +28,7 @@ public class PacketHandler
         S_PlayerList pkt = packet as S_PlayerList;
         ServerSession serverSession = session as ServerSession;
 
-        PlayerManager.Instance.Add(pkt);
+        //PlayerManager.Instance.Add(pkt);
     }
 
     public static void S_BroadcastMoveHandler(PacketSession session, IPacket packet)
@@ -36,6 +36,6 @@ public class PacketHandler
         S_BroadcastMove pkt = packet as S_BroadcastMove;
         ServerSession serverSession = session as ServerSession;
 
-        PlayerManager.Instance.Move(pkt);
+        //PlayerManager.Instance.Move(pkt);
     }
 }

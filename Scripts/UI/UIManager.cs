@@ -15,7 +15,7 @@ using VContainer.Unity;
 
 namespace UI
 {
-    public class UIManager : SingletonMB<UIManager>
+    public class UIManager : MonoBehaviour, IUIManager
     {
         [SerializeField] private Canvas             _uiCanvas               = null;
         [SerializeField] private RectTransform      _uiCanvasTrans          = null;
@@ -37,11 +37,13 @@ namespace UI
         private Camera _mainCamera = null;
 
         private IAddressableManager _addressableManager;
+        private IObjectResolver _objectResolver;
 
         [Inject]
-        public void Construct(IAddressableManager addressableManager)
+        public void Construct(IAddressableManager addressableManager, IObjectResolver objectResolver)
         {
             _addressableManager = addressableManager;
+            _objectResolver = objectResolver;
         }
 
         private void Start()
@@ -67,10 +69,8 @@ namespace UI
             _canvasHalfSize   = _canvasSize * 0.5f;
         }
 
-        public override void OnDestroy()
+        public void OnDestroy()
         {
-            base.OnDestroy();
-
             RemoveAll();
         }
 
@@ -180,7 +180,8 @@ namespace UI
                     return null;
                 }
 #endif
-                
+
+                _objectResolver.Inject(uiInstance);
                 uiInstance.Init();
 
                 _dicUICache.Add(uiData.UiId, uiInstance);

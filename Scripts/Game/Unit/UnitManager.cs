@@ -1,17 +1,13 @@
-﻿using System;
 using System.Collections.Generic;
-
-using UnityEngine;
-using AssetBundle;
 using Defs;
-using Utils;
+using UnityEngine;
 
 namespace Game
 {
-    public class UnitManager : Singleton<UnitManager>
+    public class UnitManager : IUnitManager
     {
-        private Dictionary<int, BaseUnit> _unitContainer = new Dictionary<int, BaseUnit>();
-        private int _playerId;  // 내 Unit Id
+        private readonly Dictionary<int, BaseUnit> _unitContainer = new Dictionary<int, BaseUnit>();
+        private int _playerId;
         /// <summary>
         /// Unit Table Id
         /// Status Info

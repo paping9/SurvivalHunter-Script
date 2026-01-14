@@ -1,5 +1,6 @@
 using Defs;
 using Message;
+using VContainer;
 
 namespace Alram
 {
@@ -10,18 +11,21 @@ namespace Alram
         public int Count { get; private set; }
         public int Value { get; private set; }
 
-        public DotAlramElement(DotAlramType type, AlramLevel level, int count, int value)
+        private ISignalHub _signalHub;
+
+        public DotAlramElement(DotAlramType type, AlramLevel level, int count, int value, ISignalHub signalHub)
         {
             Type = type;
             AlramLevel = level;
             Count = count;
             Value = value;
+            _signalHub = signalHub;
         }
 
         public void UpdateCount(int count)
         {
             Count = count;
-            Signals.Get<UpdateDotAlramMessage>().Dispatch(Type, Count, Value);
+            _signalHub.Get<UpdateDotAlramMessage>().Dispatch(Type, Count, Value);
         }
     }
 }

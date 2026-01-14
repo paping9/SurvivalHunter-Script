@@ -1,10 +1,7 @@
 ﻿using AssetBundle;
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using Utils;
-using Utils.Pool;
 using VContainer;
 
 namespace Sound
@@ -18,11 +15,10 @@ namespace Sound
         CrossFade
     }
 
-    public partial class BGMManager : SingletonMB<BGMManager>
+    public partial class BGMManager : MonoBehaviour, IBGMManager
     {
-        [Header("Components")]
-        [SerializeField]
-        private AudioModule[] _audios;
+        [Header("Components")] 
+        [SerializeField] private AudioModule[] _audios;
 
         private bool _mute = false;
         public bool Mute
@@ -53,14 +49,11 @@ namespace Sound
         }
         public float Volume
         {
-            get
-            {
-                return AudioModule.VolumeFactor;
-            }
+            get => AudioModule.VolumeFactor;
             set
             {
                 var val = Mathf.Clamp01(value);
-                if (AudioModule.VolumeFactor == val)
+                if (Mathf.Approximately(AudioModule.VolumeFactor, val))
                     return;
 
                 AudioModule.VolumeFactor = val;
@@ -96,8 +89,8 @@ namespace Sound
 
             for (int i = 0; i < _audios.Length; ++i)
             {
-                var comp_Audio = this.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
-                var newAudioModule = new AudioModule(comp_Audio);
+                var compAudio = this.gameObject.AddComponent(typeof(AudioSource)) as AudioSource;
+                var newAudioModule = new AudioModule(compAudio);
 
                 _audios[i] = newAudioModule;
             }
@@ -132,7 +125,7 @@ namespace Sound
                 return;
 
             if (!bResetSameClip && (this.CurrentClip != null && clip != null)
-                && (this.CurrentClip == clip || this.CurrentClip.name.CompareTo(clip.name) == 0))
+                && (this.CurrentClip == clip || String.Compare(this.CurrentClip.name, clip.name, StringComparison.Ordinal) == 0))
                 return;
             else
                 this.CurrentClip = clip;
@@ -205,16 +198,16 @@ namespace Sound
                             if (syncPrevClip)
                                 syncTime = mainAudio.PlaybackTime + fadeTime;
 
-                            System.Action outCallback = () =>
+                            void OutCallback()
                             {
                                 mainAudio.Stop();
                                 mainAudio.Volume = 0f;
 
                                 mainAudio.VolumeToDest(1f, fadeTime).Forget();
                                 mainAudio.Play(clip, syncTime);
-                            };
+                            }
 
-                            mainAudio.VolumeToDest(0f, fadeTime, outCallback).Forget();
+                            mainAudio.VolumeToDest(0f, fadeTime, OutCallback).Forget();
                         }
                         else
                         {

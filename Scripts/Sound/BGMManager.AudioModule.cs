@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using Cysharp.Threading.Tasks;
 
 namespace Sound
@@ -97,20 +96,20 @@ namespace Sound
                 _audio.loop = true;
             }
 
-            public async UniTask VolumeToDest(float volume, float time, System.Action _endCallback = null)
+            public async UniTask VolumeToDest(float volume, float time, System.Action endCallback = null)
             {
                 if (_audio == null)
                 {
-                    _endCallback?.Invoke();
+                    endCallback?.Invoke();
                     return;
                 }
 
                 float srcVolume = Volume;
                 float dstVolume = Mathf.Clamp01(volume);
 
-                if (srcVolume == dstVolume)
+                if (Mathf.Approximately(srcVolume, dstVolume))
                 {
-                    _endCallback?.Invoke();
+                    endCallback?.Invoke();
 
                     return;
                 }
@@ -132,8 +131,8 @@ namespace Sound
 
                 Volume = volume;
 
-                if (_endCallback != null)
-                    _endCallback.Invoke();
+                if (endCallback != null)
+                    endCallback.Invoke();
             }
 
             public void UpdateVolumeByFactor()

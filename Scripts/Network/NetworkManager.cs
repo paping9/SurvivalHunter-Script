@@ -2,13 +2,20 @@ using DummyClient;
 using Network;
 using ServerCore;
 using System;
-using System.Collections;
 using System.Net;
 using UnityEngine;
+using VContainer;
 
 public class NetworkManager : MonoBehaviour
 {
     private ServerSession _session = new ServerSession();
+    private IPacketQueue _packetQueue;
+
+    [Inject]
+    public void Construct(IPacketQueue packetQueue)
+    {
+        _packetQueue = packetQueue;
+    }
 
     public void Send(ArraySegment<byte> sendBuff)
     {
@@ -37,14 +44,13 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
-        var packets = PacketQueue.Instance.PopAll();
+        var packets = _packetQueue.PopAll();
 
-        foreach(var packet in packets)
+        foreach (var packet in packets)
         {
             if (packet != null)
                 PacketManager.Instance.HandlePacket(_session, packet);
         }
-        
     }
 
     private void Test()

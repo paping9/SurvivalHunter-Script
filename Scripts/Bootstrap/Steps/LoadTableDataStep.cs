@@ -1,18 +1,28 @@
 using Cysharp.Threading.Tasks;
+using Data;
 using UnityEngine;
+using VContainer;
 
 namespace Bootstrap
 {
     /// <summary>
-    /// Å×ÀÌºí µ¥ÀÌÅÍ ·Îµå (°ÔÀÓ ¹ë·±½º, ¾ÆÀÌÅÛ µî)
+    /// í…Œì´ë¸” ë°ì´í„° ë¡œë“œ
     /// </summary>
     public class LoadTableDataStep : IBootstrapStep
     {
-        public string StepName => "·Îµå: Å×ÀÌºí µ¥ÀÌÅÍ";
+        private ITableDataManager _tableDataManager;
+
+        [Inject]
+        public void Construct(ITableDataManager tableDataManager)
+        {
+            _tableDataManager = tableDataManager;
+        }
+
+        public string StepName => "ë¡œë”©: í…Œì´ë¸” ë°ì´í„°";
 
         public async UniTask Execute()
         {
-            await UniTask.Delay(200); // ½Ã¹Ä·¹ÀÌ¼Ç
+            await _tableDataManager.InitializeAsync();
             Debug.Log("[Bootstrap] Table data loaded");
         }
 

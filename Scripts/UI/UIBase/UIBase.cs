@@ -5,6 +5,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using Utils.Extension;
+using VContainer;
 
 namespace UI
 {
@@ -31,6 +32,7 @@ namespace UI
 
         private UIState _state = UIState.None;
         private CancellationTokenSource _cancelToken;
+        private IUIManager _uiManager;
 
         public bool             IsActivate => _state == UIState.Open;
         public UIID             Id => _baseData.UiId;
@@ -38,7 +40,13 @@ namespace UI
         public bool             IsForceTop => _isforceTop;
         public int              Priority => _priority;
         public DepthType        DepthType => _depthType;
-
+        
+        [Inject]
+        private void Construct(IUIManager uiManager)
+        {
+            _uiManager = uiManager;
+        }
+        
         public abstract void Init();
         public abstract void Remove();
 
@@ -133,7 +141,7 @@ namespace UI
 
         public virtual void Close()
         {
-            UIManager.Instance.Close(_baseData.UiId);
+            _uiManager.Close(_baseData.UiId);
         }
 
         public virtual void Show()

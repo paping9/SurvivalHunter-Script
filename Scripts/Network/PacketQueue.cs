@@ -1,13 +1,11 @@
-﻿using System;
 using System.Collections.Generic;
-using Utils;
 
 namespace Network
 {
-    public class PacketQueue : Singleton<PacketQueue>
+    public class PacketQueue : IPacketQueue
     {
-        private Queue<IPacket> _packetQueue = new Queue<IPacket>();
-        private object _lock = new object();
+        private readonly Queue<IPacket> _packetQueue = new Queue<IPacket>();
+        private readonly object _lock = new object();
 
         public void Push(IPacket packet)
         {
