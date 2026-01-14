@@ -5,7 +5,7 @@ using Utils;
 
 namespace Game
 {
-    public class InputManager : SingletonMB<InputManager>
+    public class InputManager : MonoBehaviour, IInputManager
     {
         [SerializeField] private PlayerInput _playerInput;
     
@@ -23,10 +23,8 @@ namespace Game
             // _inputActions.Player.Move.canceled  += OnMoveCanceled;
         }
 
-        public override void OnDestroy()
+        public void OnDestroy()
         {
-            base.OnDestroy();
-            
             // _inputActions.Disable();
             //
             // _inputActions.Player.Move.performed -= OnMovePerformed;

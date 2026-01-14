@@ -1,52 +1,52 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Utils;
 using VContainer;
 
 namespace Bootstrap
 {
     /// <summary>
-    /// °ÔÀÓ ½ÃÀÛ ½Ã ÇÊ¿äÇÑ ÃÊ±âÈ­ ÀÛ¾÷À» °ü¸®
-    /// µ¥ÀÌÅÍ ·Îµå, ¼­¹ö ¿¬°á µîÀ» ¼øÂ÷ÀûÀ¸·Î Ã³¸®
+    /// ê²Œì„ ì‹œì‘ ì‹œ í•„ìš”í•œ ì´ˆê¸°í™” ì‘ì—…ì„ ê´€ë¦¬
     /// </summary>
-    public class BootstrapManager : Singleton<BootstrapManager>
+    public class BootstrapManager : IBootstrapManager
     {
-        private List<IBootstrapStep> _bootstrapSteps = new List<IBootstrapStep>();
+        private readonly List<IBootstrapStep> _bootstrapSteps = new List<IBootstrapStep>();
         private int _currentStepIndex = -1;
         private float _totalProgress = 0;
         private bool _isBootstrapping = false;
         private Action<float> _onProgressChanged;
         private Action<string> _onStepChanged;
-        
+
         private IObjectResolver _container;
 
         public bool IsBootstrapping => _isBootstrapping;
         public float TotalProgress => _totalProgress;
-        public string CurrentStep => _currentStepIndex >= 0 && _currentStepIndex < _bootstrapSteps.Count 
-            ? _bootstrapSteps[_currentStepIndex].StepName 
+        public string CurrentStep => _currentStepIndex >= 0 && _currentStepIndex < _bootstrapSteps.Count
+            ? _bootstrapSteps[_currentStepIndex].StepName
             : "";
 
-        public void SetContainer(IObjectResolver container)
+        [Inject]
+        public void Construct(IObjectResolver container)
         {
             _container = container;
         }
 
         /// <summary>
-        /// Bootstrap ´Ü°è µî·Ï
+        /// Bootstrap ë‹¨ê³„ ë“±ë¡
         /// </summary>
         public void RegisterStep(IBootstrapStep step)
         {
             if (step == null) return;
-            
+
             if (!_bootstrapSteps.Contains(step))
             {
+                _container?.Inject(step);
                 _bootstrapSteps.Add(step);
             }
         }
 
         /// <summary>
-        /// ¿©·¯ Bootstrap ´Ü°è µî·Ï
+        /// ï¿½ï¿½ï¿½ï¿½ Bootstrap ï¿½Ü°ï¿½ ï¿½ï¿½ï¿½
         /// </summary>
         public void RegisterSteps(params IBootstrapStep[] steps)
         {
@@ -57,7 +57,7 @@ namespace Bootstrap
         }
 
         /// <summary>
-        /// Bootstrap ½ÃÀÛ
+        /// Bootstrap ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public UniTask<bool> StartBootstrap(Action<float> onProgressChanged = null, Action<string> onStepChanged = null)
         {
@@ -89,7 +89,7 @@ namespace Bootstrap
 
                     await step.Execute();
 
-                    // °¢ ´Ü°èÀÇ ÁøÇà·ü °è»ê
+                    // ï¿½ï¿½ ï¿½Ü°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
                     UpdateProgress();
                 }
 
@@ -114,7 +114,7 @@ namespace Bootstrap
         {
             if (_bootstrapSteps.Count > 0)
             {
-                // ¿Ï·áµÈ ´Ü°è + ÇöÀç ´Ü°èÀÇ ÁøÇà·ü
+                // ï¿½Ï·ï¿½ï¿½ ï¿½Ü°ï¿½ + ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
                 float stepsProgress = (float)(_currentStepIndex + 1) / _bootstrapSteps.Count;
                 _totalProgress = stepsProgress;
                 _onProgressChanged?.Invoke(_totalProgress);

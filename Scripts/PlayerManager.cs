@@ -1,13 +1,10 @@
-﻿using System;
 using System.Collections.Generic;
-
 using UnityEngine;
-using Utils;
 
-public class PlayerManager : Singleton<PlayerManager>
+public class PlayerManager : IPlayerManager
 {
     private MyPlayer _myPlayer;
-    private Dictionary<int, Player> _players = new Dictionary<int, Player>();
+    private readonly Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
     public void Add(S_PlayerList packet)
     {

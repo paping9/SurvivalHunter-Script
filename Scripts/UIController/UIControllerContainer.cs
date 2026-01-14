@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
+using VContainer;
 
 namespace UIController
 {
@@ -18,7 +19,15 @@ namespace UIController
         // Stack 쌓아 두고 Back Key 로 이동.
         private Stack<UIControllerParam> _stackControllerTypes = new Stack<UIControllerParam>();
         private IUIController _currentController = null;
+        private IObjectResolver _objectResolver;
+
         public IUIController CurrentController { get => _currentController; }
+
+        [Inject]
+        public void Construct(IObjectResolver objectResolver)
+        {
+            _objectResolver = objectResolver;
+        }
 
         // TODO : Stack 에 존재하는 Controller 로 이동 시 처리해야 하는 정책
         public async UniTask ChangeUIController(UIControllerParam param, bool addStack = true)
@@ -28,6 +37,7 @@ namespace UIController
             if(_uiControllers.TryGetValue(param.ControllerType, out controller) == false)
             {
                 controller = CreateController(param.ControllerType);
+                _uiControllers[param.ControllerType] = controller;
             }
 
             await controller.OnEnter(param);
@@ -70,14 +80,19 @@ namespace UIController
 
         private IUIController CreateController(UIControllerType controllerType)
         {
-            switch (controllerType)
+            IUIController controller = controllerType switch
             {
-                case UIControllerType.Title:
-                    return new TitleUIController();
-                case UIControllerType.Home:
-                    return new HomeUIController();
+                UIControllerType.Title => new TitleUIController(),
+                UIControllerType.Home => new HomeUIController(),
+                _ => null
+            };
+
+            if (controller != null)
+            {
+                _objectResolver.Inject(controller);
             }
-            return null;
+
+            return controller;
         }
     }
 }

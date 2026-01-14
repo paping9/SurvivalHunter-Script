@@ -12,32 +12,19 @@ namespace Message
     }
 
     /// <summary>
-    /// Signals main facade class for global, game-wide signals
+    /// Interface for SignalHub to enable dependency injection
     /// </summary>
-    public static class Signals
+    public interface ISignalHub
     {
-        private static readonly SignalHub hub = new SignalHub();
-
-        public static SType Get<SType>() where SType : ISignal, new()
-        {
-            return hub.Get<SType>();
-        }
-
-        public static void AddListenerToHash(string signalHash, Action handler)
-        {
-            hub.AddListenerToHash(signalHash, handler);
-        }
-
-        public static void RemoveListenerFromHash(string signalHash, Action handler)
-        {
-            hub.RemoveListenerFromHash(signalHash, handler);
-        }
+        SType Get<SType>() where SType : ISignal, new();
+        void AddListenerToHash(string signalHash, Action handler);
+        void RemoveListenerFromHash(string signalHash, Action handler);
     }
 
     /// <summary>
     /// A hub for Signals you can implement in your classes
     /// </summary>
-    public class SignalHub
+    public class SignalHub : ISignalHub
     {
         private Dictionary<Type, ISignal> signals = new Dictionary<Type, ISignal>();
 

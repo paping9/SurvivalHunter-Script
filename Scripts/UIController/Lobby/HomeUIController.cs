@@ -2,11 +2,21 @@
 using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
+using UI;
+using VContainer;
 
 namespace UIController
 {
     public class HomeUIController : IUIController
     {
+        private IUIManager _uiManager;
+        
+        [Inject]
+        private void Construct(IUIManager uiManager)
+        {
+            _uiManager = uiManager;
+        }
+        
         public UIControllerType ControllerType { get => UIControllerType.Home; }
 
         public async UniTask OnEnter(UIControllerParam param)

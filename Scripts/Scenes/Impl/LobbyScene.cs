@@ -6,9 +6,18 @@ using Cysharp.Threading.Tasks;
 using Message;
 using Scene;
 using UIController;
+using VContainer;
 
 public class LobbyScene : BaseScene
 {
+    private ISignalHub _signalHub;
+
+    [Inject]
+    public void Construct(ISignalHub signalHub)
+    {
+        _signalHub = signalHub;
+    }
+
     public override void OnSceneStart(SceneData sceneData = null)
     {
         base.OnSceneStart(sceneData);
@@ -30,12 +39,12 @@ public class LobbyScene : BaseScene
 
     private void AddMessageListeners()
     {
-        Signals.Get<ChangeHomeMenuSignal>().AddListener(OnChangeHomeMenu);
+        _signalHub.Get<ChangeHomeMenuSignal>().AddListener(OnChangeHomeMenu);
     }
 
     private void RemoveMessageListeners()
     {
-        Signals.Get<ChangeHomeMenuSignal>().RemoveListener(OnChangeHomeMenu);
+        _signalHub.Get<ChangeHomeMenuSignal>().RemoveListener(OnChangeHomeMenu);
     }
 
     private void OnChangeHomeMenu(UIControllerType uiControllerType)

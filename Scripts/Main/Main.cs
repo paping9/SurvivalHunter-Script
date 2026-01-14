@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Game;
-using UnityEngine;
+﻿using UnityEngine;
 
 using UIController;
 using Scene;
-using Utils;
 using VContainer;
-using VContainer.Unity;
-using UI;
 
-public class Main : SingletonMB<Main>
+public class Main : MonoBehaviour
 {
     private IUIControllerContainer _uiController;
     private ISceneManager _sceneManager;
@@ -38,9 +32,8 @@ public class Main : SingletonMB<Main>
        _sceneManager.ChangeScene(ContentSceneType.Title, (result) => { });
     }
 
-    public override void OnDestroy()
+    public void OnDestroy()
     {
-        base.OnDestroy();
     }
 
     private void Update()

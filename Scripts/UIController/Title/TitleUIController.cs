@@ -4,16 +4,26 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 
 using UI;
+using VContainer;
 
 namespace UIController
 {
     public class TitleUIController : IUIController
     {
+        private IUIManager _uiManager;
+        
         public UIControllerType ControllerType { get => UIControllerType.Title; }
-
+        
+        [Inject]
+        private void Construct(IUIManager uiManager)
+        {
+            _uiManager = uiManager;
+        }
+        
+        
         public async UniTask OnEnter(UIControllerParam param)
         {
-            await UIManager.Instance.OpenAsync(UIID.TitleWindow, new UIParam() { });
+            await _uiManager.OpenAsync(UIID.TitleWindow, new UIParam() { });
 
             await UniTask.DelayFrame(1);
         }

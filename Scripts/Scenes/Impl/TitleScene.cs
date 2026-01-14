@@ -4,12 +4,18 @@ using Bootstrap;
 using Scene;
 using UIController;
 using UnityEngine;
-using VContainer.Unity;
+using VContainer;
 
 public class TitleScene : BaseScene
 {
-    private BootstrapManager _bootstrapManager;
+    private IBootstrapManager _bootstrapManager;
     private bool _bootstrapCompleted = false;
+
+    [Inject]
+    public void Construct(IBootstrapManager bootstrapManager)
+    {
+        _bootstrapManager = bootstrapManager;
+    }
 
     public override void OnSceneStart(SceneData sceneData = null)
     {
@@ -37,7 +43,6 @@ public class TitleScene : BaseScene
 
     private async UniTaskVoid StartBootstrap()
     {
-        _bootstrapManager = BootstrapManager.Instance;
         _bootstrapManager.Clear();
 
         // Bootstrap 단계 등록
