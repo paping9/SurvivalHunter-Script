@@ -1,0 +1,20 @@
+{
+  "name": "Plugin",
+  "rootNamespace": "",
+  "references": [
+    "VContainer",
+    "UniTask",
+    "UniRx",
+    "Unity.Addressables",
+    "Unity.ResourceManager"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

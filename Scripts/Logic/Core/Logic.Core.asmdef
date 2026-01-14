@@ -1,0 +1,24 @@
+{
+  "name": "Logic.Core",
+  "rootNamespace": "",
+  "references": [
+    "Plugin",
+    "Logic.Share",
+    "VContainer",
+    "UniTask",
+    "UniRx",
+    "Unity.Addressables",
+    "Unity.ResourceManager",
+    "Unity.InputSystem",
+    "Unity.Timeline"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
