@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -41,14 +41,23 @@ namespace UI
         public int              Priority => _priority;
         public DepthType        DepthType => _depthType;
         
+        /// <summary>
+        /// Receives the injected IUIManager instance and stores it for use by this UI.
+        /// </summary>
         [Inject]
         private void Construct(IUIManager uiManager)
         {
             _uiManager = uiManager;
         }
         
-        public abstract void Init();
-        public abstract void Remove();
+        /// <summary>
+/// Initializes UI-specific state and resources when the UI is prepared for use.
+/// </summary>
+public abstract void Init();
+        /// <summary>
+/// Perform cleanup when the UI is permanently removed, releasing resources and unregistering any subscriptions or running tasks.
+/// </summary>
+public abstract void Remove();
 
         public void InitUi(UiData uidata)
         {
@@ -139,11 +148,17 @@ namespace UI
             return true;
         }
 
+        /// <summary>
+        /// Requests closure of this UI instance via the UI manager using this UI's identifier.
+        /// </summary>
         public virtual void Close()
         {
             _uiManager.Close(_baseData.UiId);
         }
 
+        /// <summary>
+        /// Activates the UI's GameObject so the UI becomes visible in the scene.
+        /// </summary>
         public virtual void Show()
         {
             UtilityEx.SetActive(this.gameObject, true);

@@ -6,6 +6,10 @@ public class PlayerManager : IPlayerManager
     private MyPlayer _myPlayer;
     private readonly Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
+    /// <summary>
+    /// Spawns Player GameObjects from the given player list, positions them, and registers them with the manager.
+    /// </summary>
+    /// <param name="packet">A player-list packet whose entries specify each player's position, player id, and whether the entry represents the local player. Local player entries are added as a MyPlayer and stored in _myPlayer; other entries are added as Player and stored in _players.</param>
     public void Add(S_PlayerList packet)
     {
         var gameObject = Resources.Load("Player");

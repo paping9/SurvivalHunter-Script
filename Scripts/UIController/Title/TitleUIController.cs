@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
@@ -14,6 +14,10 @@ namespace UIController
         
         public UIControllerType ControllerType { get => UIControllerType.Title; }
         
+        /// <summary>
+        /// Initializes the controller's UI manager dependency.
+        /// </summary>
+        /// <param name="uiManager">The UI manager instance to use for opening and managing UI windows.</param>
         [Inject]
         private void Construct(IUIManager uiManager)
         {
@@ -21,6 +25,11 @@ namespace UIController
         }
         
         
+        /// <summary>
+        /// Opens the title window and then yields for one frame.
+        /// </summary>
+        /// <param name="param">Parameters supplied when entering this controller; currently unused.</param>
+        /// <returns>Completes after the title window is opened and one frame has elapsed.</returns>
         public async UniTask OnEnter(UIControllerParam param)
         {
             await _uiManager.OpenAsync(UIID.TitleWindow, new UIParam() { });

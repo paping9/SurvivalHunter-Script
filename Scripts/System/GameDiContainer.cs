@@ -17,6 +17,10 @@ namespace System
 {
     public class GameDiContainer : LifetimeScope
     {
+        /// <summary>
+        /// Configures dependency injection bindings for the game by registering core services, bootstrap, game and network managers, MonoBehaviour components from the scene hierarchy, and map-related components.
+        /// </summary>
+        /// <param name="builder">The container builder used to register service and component bindings (singletons and scene‑hierarchy components) for the application.</param>
         protected override void Configure(IContainerBuilder builder)
         {
             // Core Services

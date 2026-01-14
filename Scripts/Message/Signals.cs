@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Message
@@ -16,9 +16,25 @@ namespace Message
     /// </summary>
     public interface ISignalHub
     {
-        SType Get<SType>() where SType : ISignal, new();
-        void AddListenerToHash(string signalHash, Action handler);
-        void RemoveListenerFromHash(string signalHash, Action handler);
+        /// <summary>
+/// Gets the signal instance for the requested type from the hub, creating and caching one if necessary.
+/// </summary>
+/// <typeparam name="SType">The concrete signal type to retrieve.</typeparam>
+/// <returns>The signal instance of the requested type; newly created and stored if it did not already exist.</returns>
+SType Get<SType>() where SType : ISignal, new();
+        /// <summary>
+/// Registers a parameterless listener for the signal identified by the given hash.
+/// </summary>
+/// <param name="signalHash">The signal's Hash value used to locate the signal.</param>
+/// <param name="handler">The callback to invoke when the signal is dispatched.</param>
+/// <remarks>If no signal with the specified hash exists or the located signal does not accept a parameterless listener, this method has no effect.</remarks>
+void AddListenerToHash(string signalHash, Action handler);
+        /// <summary>
+/// Unregisters a zero-argument listener from the signal identified by the specified hash.
+/// </summary>
+/// <param name="signalHash">The hash identifier of the signal (commonly the signal type's full name).</param>
+/// <param name="handler">The previously registered listener delegate to remove.</param>
+void RemoveListenerFromHash(string signalHash, Action handler);
     }
 
     /// <summary>

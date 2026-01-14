@@ -1,4 +1,4 @@
-﻿using AssetBundle;
+using AssetBundle;
 using Cysharp.Threading.Tasks;
 using Scene;
 using System;
@@ -39,6 +39,11 @@ namespace UI
         private IAddressableManager _addressableManager;
         private IObjectResolver _objectResolver;
 
+        /// <summary>
+        /// Injects the addressable asset manager and object resolver used by the UIManager.
+        /// </summary>
+        /// <param name="addressableManager">Manager used to load and release UI addressable assets.</param>
+        /// <param name="objectResolver">Resolver used to inject dependencies into created UI instances.</param>
         [Inject]
         public void Construct(IAddressableManager addressableManager, IObjectResolver objectResolver)
         {
@@ -46,6 +51,12 @@ namespace UI
             _objectResolver = objectResolver;
         }
 
+        /// <summary>
+        /// Configures the CanvasScaler's width/height match and computes the canvas size and half-size based on the current screen aspect ratio and the default UI resolution.
+        /// </summary>
+        /// <remarks>
+        /// Sets <c>_canvasScaler.matchWidthOrHeight</c> to prefer width or height depending on the screen's aspect ratio, then calculates and stores <c>_canvasSize</c> and <c>_canvasHalfSize</c>.
+        /// </remarks>
         private void Start()
         {
             var fRateWidth        = (float)Screen.width / CommonConstValue.DefaultWidth;
@@ -69,6 +80,12 @@ namespace UI
             _canvasHalfSize   = _canvasSize * 0.5f;
         }
 
+        /// <summary>
+        /// Cleans up and releases all managed UI instances and related resources.
+        /// </summary>
+        /// <remarks>
+        /// Called when the UI manager is destroyed; clears internal caches and releases instantiated UI objects.
+        /// </remarks>
         public void OnDestroy()
         {
             RemoveAll();
@@ -164,6 +181,11 @@ namespace UI
             return uiInstance;
         }
 
+        /// <summary>
+        /// Create or retrieve a UI instance for the provided UiData, initialize it, register it in the UI caches, and parent/configure its RectTransform.
+        /// </summary>
+        /// <param name="uiData">Data identifying the UI to create and any initialization parameters (contains the UiId and related UI parameters).</param>
+        /// <returns>The initialized UIBase instance that was created or retrieved from cache, or `null` if instantiation failed.</returns>
         private async UniTask<UIBase> CreateInstanceBasic(UiData uiData)
         {
             UIBase uiInstance = null;

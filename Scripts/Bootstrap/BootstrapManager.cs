@@ -25,6 +25,10 @@ namespace Bootstrap
             ? _bootstrapSteps[_currentStepIndex].StepName
             : "";
 
+        /// <summary>
+        /// Assigns the dependency injection container used to inject dependencies into bootstrap steps.
+        /// </summary>
+        /// <param name="container">The object resolver used to inject dependencies into registered bootstrap steps.</param>
         [Inject]
         public void Construct(IObjectResolver container)
         {
@@ -33,7 +37,11 @@ namespace Bootstrap
 
         /// <summary>
         /// Bootstrap 단계 등록
+        /// <summary>
+        /// Registers a bootstrap step for execution during startup. If a dependency injection container is available, the step will be injected before registration.
+        /// Duplicate steps are ignored; passing null has no effect.
         /// </summary>
+        /// <param name="step">The bootstrap step to register.</param>
         public void RegisterStep(IBootstrapStep step)
         {
             if (step == null) return;
@@ -47,7 +55,10 @@ namespace Bootstrap
 
         /// <summary>
         /// ���� Bootstrap �ܰ� ���
+        /// <summary>
+        /// Registers multiple bootstrap steps in the given order. Non-null steps are added to the bootstrap sequence and will be injected via the configured container if available.
         /// </summary>
+        /// <param name="steps">Array of bootstrap steps to register; null elements are ignored.</param>
         public void RegisterSteps(params IBootstrapStep[] steps)
         {
             foreach (var step in steps)
@@ -58,12 +69,23 @@ namespace Bootstrap
 
         /// <summary>
         /// Bootstrap ����
+        /// <summary>
+        /// Starts the registered bootstrap steps sequence and reports progress and step changes via callbacks.
         /// </summary>
+        /// <param name="onProgressChanged">Callback invoked with overall progress value in the range [0, 1] after each step completes.</param>
+        /// <param name="onStepChanged">Callback invoked with the name of the step that is starting.</param>
+        /// <returns>`true` if all bootstrap steps completed successfully, `false` otherwise.</returns>
         public UniTask<bool> StartBootstrap(Action<float> onProgressChanged = null, Action<string> onStepChanged = null)
         {
             return StartBootstrapInternal(onProgressChanged, onStepChanged);
         }
 
+        /// <summary>
+        /// Executes registered bootstrap steps in sequence while reporting current step and overall progress.
+        /// </summary>
+        /// <param name="onProgressChanged">Callback invoked with the overall progress value (0 to 1) after each step and upon completion.</param>
+        /// <param name="onStepChanged">Callback invoked with the current step's name immediately before that step starts.</param>
+        /// <returns>`true` if all steps completed successfully; `false` if a bootstrap was already running or a step failed.</returns>
         private async UniTask<bool> StartBootstrapInternal(Action<float> onProgressChanged, Action<string> onStepChanged)
         {
             if (_isBootstrapping)
@@ -110,6 +132,12 @@ namespace Bootstrap
             }
         }
 
+        /// <summary>
+        /// Updates the manager's overall bootstrap progress and notifies the progress callback when steps are registered.
+        /// </summary>
+        /// <remarks>
+        /// Calculates progress as (current step index + 1) divided by the total number of registered steps, stores the result in <c>_totalProgress</c>, and invokes <c>_onProgressChanged</c> if it is set. No action is taken when there are no registered steps.
+        /// </remarks>
         private void UpdateProgress()
         {
             if (_bootstrapSteps.Count > 0)

@@ -1,4 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 using Bootstrap;
 using Scene;
@@ -11,12 +11,20 @@ public class TitleScene : BaseScene
     private IBootstrapManager _bootstrapManager;
     private bool _bootstrapCompleted = false;
 
+    /// <summary>
+    /// Injects the bootstrap manager dependency into the scene.
+    /// </summary>
+    /// <param name="bootstrapManager">Instance of IBootstrapManager used to perform application bootstrap steps.</param>
     [Inject]
     public void Construct(IBootstrapManager bootstrapManager)
     {
         _bootstrapManager = bootstrapManager;
     }
 
+    /// <summary>
+    /// Initializes the scene, attaches message listeners, and begins the bootstrap sequence.
+    /// </summary>
+    /// <param name="sceneData">Optional data provided when the scene is started; may be null.</param>
     public override void OnSceneStart(SceneData sceneData = null)
     {
         base.OnSceneStart(sceneData);
@@ -41,6 +49,15 @@ public class TitleScene : BaseScene
         _uiController.Back().Forget();
     }
 
+    /// <summary>
+    /// Initiates the application bootstrap sequence: registers bootstrap steps, shows the title loading UI, runs the bootstrap process with progress and step callbacks, marks bootstrap completion, and navigates to the lobby on success.
+    /// </summary>
+    /// <remarks>
+    /// Side effects:
+    /// - Updates the UI to the title/loading controller.
+    /// - Sets the internal <c>_bootstrapCompleted</c> flag to <c>true</c> when finished.
+    /// - On successful completion, transitions the scene to the lobby.
+    /// </remarks>
     private async UniTaskVoid StartBootstrap()
     {
         _bootstrapManager.Clear();

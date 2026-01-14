@@ -13,6 +13,12 @@ namespace Game
 
         private InputActions _inputActions = null;
         
+        /// <summary>
+        /// Initializes the PlayerController with a new InputActions instance.
+        /// </summary>
+        /// <remarks>
+        /// Input action enabling and event subscriptions are currently disabled (commented out).
+        /// </remarks>
         private void Start()
         {
             PlayerController = new PlayerController(new InputActions());
@@ -23,6 +29,12 @@ namespace Game
             // _inputActions.Player.Move.canceled  += OnMoveCanceled;
         }
 
+        /// <summary>
+        /// Unity callback invoked when this component is destroyed.
+        /// </summary>
+        /// <remarks>
+        /// Disables input actions and detaches input event handlers to stop receiving input and avoid memory leaks.
+        /// </remarks>
         public void OnDestroy()
         {
             // _inputActions.Disable();

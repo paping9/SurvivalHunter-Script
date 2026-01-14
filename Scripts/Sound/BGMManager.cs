@@ -1,4 +1,4 @@
-﻿using AssetBundle;
+using AssetBundle;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
@@ -83,6 +83,9 @@ namespace Sound
             _addressableManager = addressableManager;
         }
 
+        /// <summary>
+        /// Initializes the manager's audio modules by creating a two-element array and adding two AudioSource components to the GameObject, each wrapped in an AudioModule.
+        /// </summary>
         private void Awake()
         {
             _audios = new AudioModule[2];
@@ -119,6 +122,17 @@ namespace Sound
             });
         }
 
+        /// <summary>
+        /// Starts playback of the specified background music clip using the given fade mode and duration.
+        /// </summary>
+        /// <param name="clip">The AudioClip to play as background music. Can be null to clear the current clip.</param>
+        /// <param name="fadeType">The fade behavior to use when switching to the new clip.</param>
+        /// <param name="fadeTime">Duration in seconds for the fade transition; values less than or equal to 0 result in an immediate change.</param>
+        /// <param name="syncPrevClip">If true and a clip is currently playing, attempt to align the new clip's playback time with the current clip's playback position.</param>
+        /// <param name="bResetSameClip">If true, restart playback even when the provided clip matches the currently playing clip; otherwise the method returns without changing playback.</param>
+        /// <remarks>
+        /// If changing BGM is globally ignored via IgnoreChangeBgm, this method returns without action. When playback proceeds, the manager's CurrentClip is updated to the provided clip and playback begins with the requested fade behavior.
+        /// </remarks>
         public void PlayBGM(AudioClip clip, FadeType fadeType, float fadeTime, bool syncPrevClip = false, bool bResetSameClip = false)
         {
             if (IgnoreChangeBgm)
@@ -133,6 +147,14 @@ namespace Sound
             PlayBGMInternel(clip, fadeType, fadeTime, syncPrevClip, bResetSameClip);
         }
 
+        /// <summary>
+        /// Starts playback of the provided clip using the manager's two audio modules and applies the specified fade transition.
+        /// </summary>
+        /// <param name="clip">The audio clip to play.</param>
+        /// <param name="fadeType">The fade mode to apply when switching to the clip.</param>
+        /// <param name="fadeTime">The duration, in seconds, of the fade transition; values &lt;= 0 play immediately.</param>
+        /// <param name="syncPrevClip">If true, align the new clip's playback time with the current main audio's playback time where applicable.</param>
+        /// <param name="bResetSameClip">Indicates whether to force restarting the same clip when invoked (may be ignored by this internal routine).</param>
         private void PlayBGMInternel(AudioClip clip, FadeType fadeType, float fadeTime, bool syncPrevClip, bool bResetSameClip)
         {
             var mainAudio = _audios[0];

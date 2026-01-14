@@ -22,12 +22,22 @@ namespace Data
         protected readonly Dictionary<string, object> TableCache = new();
         protected Dictionary<string, List<string>> TableHierarchy = new();
         
+        /// <summary>
+        /// Initializes the table data manager by loading the table metadata JSON and caching all table assets.
+        /// </summary>
+        /// <returns>Completes when the table metadata and all referenced tables have been loaded into the manager's cache.</returns>
         public async UniTask InitializeAsync()
         {
             await LoadTableDataJson();
             await LoadAllTables();
         }
         
+        /// <summary>
+        /// Loads the TableData.json TextAsset from addressables and deserializes it into <see cref="TableHierarchy"/>.
+        —/// </summary>
+        /// <remarks>
+        /// If loading fails the method logs an error and returns without modifying <see cref="TableHierarchy"/>. On success it populates <see cref="TableHierarchy"/> with the deserialized dictionary and logs the number of table groups found.
+        /// </remarks>
         protected async UniTask LoadTableDataJson()
         {
             var handle = Addressables.LoadAssetAsync<TextAsset>(TableDataJsonKey);
@@ -44,6 +54,10 @@ namespace Data
             Debug.Log($"✅ Loaded TableData.json: {TableHierarchy.Count} table groups found.");
         }
         
+        /// <summary>
+        /// Load and cache every table asset listed in <see cref="TableHierarchy"/>.
+        /// </summary>
+        /// <returns>A UniTask that completes when all table loading operations have finished.</returns>
         protected async UniTask LoadAllTables()
         {
             var tasks = new List<UniTask>();
@@ -57,6 +71,12 @@ namespace Data
             await UniTask.WhenAll(tasks);
         }
         
+        /// <summary>
+        /// Loads a table asset from the given addressable path and populates the cache for type T.
+        /// </summary>
+        /// <param name="path">Addressable key or path of the BaseTableData&lt;T&gt; asset to load.</param>
+        /// <returns>`CacheTable&lt;T&gt;` containing the cached entries for the table type, or `null` if the asset failed to load.</returns>
+        /// <remarks>Ensures TableCache contains a CacheTable&lt;T&gt; instance and fills it with the loaded entries keyed by each item's ID.</remarks>
         public async UniTask<CacheTable<T>> LoadTableAsync<T>(string path) where T : TableRaw
         {
             string key = typeof(T).Name;
@@ -89,6 +109,10 @@ namespace Data
             return null;
         }
 
+        /// <summary>
+        /// Retrieves all cached entries for the table type T.
+        /// </summary>
+        /// <returns>An array of cached entries of type T if present; otherwise null.</returns>
         public T[] GetTable<T>() where T : TableRaw
         {
             string key = typeof(T).Name;
@@ -102,6 +126,12 @@ namespace Data
             return null;
         }
 
+        /// <summary>
+        /// Retrieves a cached table entry by its identifier for the specified table type.
+        /// </summary>
+        /// <typeparam name="T">The table data type to retrieve.</typeparam>
+        /// <param name="id">The identifier of the table entry to retrieve.</param>
+        /// <returns>The cached item with the specified id, or null if not found.</returns>
         public T Get<T>(int id) where T : TableRaw
         {
             string key = typeof(T).Name;
@@ -117,6 +147,12 @@ namespace Data
             return null;
         }
         
+        /// <summary>
+        /// Attempts to retrieve a cached table entry of type T by its ID.
+        /// </summary>
+        /// <param name="id">Identifier of the table entry to retrieve.</param>
+        /// <param name="data">When this method returns, contains the retrieved entry if found; otherwise `null`.</param>
+        /// <returns>`true` if an entry with the specified ID exists in the cache for type T and is assigned to <paramref name="data"/>, `false` otherwise.</returns>
         public bool TryGet<T>(int id, out T data) where T : TableRaw
         {
             string key = typeof(T).Name;
@@ -131,6 +167,12 @@ namespace Data
             return false;
         }
 
+        /// <summary>
+        /// Intentionally does nothing; calling this method does not modify cached table data.
+        /// </summary>
+        /// <remarks>
+        /// Reserved for API compatibility; the cache is preserved when this method is invoked.
+        /// </remarks>
         public void Clear()
         {
         }

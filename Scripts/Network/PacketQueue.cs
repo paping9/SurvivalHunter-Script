@@ -7,6 +7,10 @@ namespace Network
         private readonly Queue<IPacket> _packetQueue = new Queue<IPacket>();
         private readonly object _lock = new object();
 
+        /// <summary>
+        /// Enqueues the given packet into the internal queue in a thread-safe manner.
+        /// </summary>
+        /// <param name="packet">The packet to add to the queue.</param>
         public void Push(IPacket packet)
         {
             lock (_lock)

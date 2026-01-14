@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using UIController;
 using Scene;
@@ -27,15 +27,27 @@ public class Main : MonoBehaviour
         _sceneManager.Init();
     }
 
+    /// <summary>
+    /// Switches the active scene to the Title scene.
+    /// </summary>
     private void StartTitle()
     {
        _sceneManager.ChangeScene(ContentSceneType.Title, (result) => { });
     }
 
+    /// <summary>
+    /// Unity callback invoked when the GameObject is destroyed; currently no cleanup is performed.
+    /// </summary>
     public void OnDestroy()
     {
     }
 
+    /// <summary>
+    /// Per-frame update method invoked by Unity to advance game logic and handle frame-based processing.
+    /// </summary>
+    /// <remarks>
+    /// Currently has no implementation; left intentionally empty for future per-frame logic.
+    /// </remarks>
     private void Update()
     {
         
